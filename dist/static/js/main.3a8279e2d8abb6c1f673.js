@@ -1,1 +1,0 @@
-webpackJsonp([1],{183:function(e,n,o){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),o(38);var r=function(){function e(){var e=PIXI.autoDetectRenderer(256,256);document.body.appendChild(e.view);var n=new PIXI.Container;e.render(n),console.log("asdasdasdasd")}return e}();new r}},[183]);

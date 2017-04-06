@@ -1,16 +1,21 @@
-import 'pixi.js';
-
+import Player from './core/player/Player';
+import {IPlayerOption} from './core/interface/IPlayerOption';
 class Main {
-
+  private player: Player;
   constructor() {
-    let renderer = PIXI.autoDetectRenderer(256, 256);
-    document.body.appendChild(renderer.view);
-    let stage = new PIXI.Container();
-    renderer.render(stage);
-    console.log('asdasdasdasd')
+    
+  }
+  public initPlayer():void{
+    let list = document.querySelectorAll(".player");
+    let length = list.length;
+    for (let i = 0; i < length; i++) {
+      let container = <HTMLDivElement>list[i];
+      let player = new Player(container);
+    }
   }
 }
 
 let main: Main = new Main();
+main.initPlayer();
 
 

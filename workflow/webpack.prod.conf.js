@@ -58,6 +58,4 @@ var webpackConfig = webpackMerge(baseWebpackConfig, {
   ]
 });
 
-console.log('proconfig',webpackConfig);
-
 module.exports = webpackConfig;
