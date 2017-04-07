@@ -1,21 +1,34 @@
 import Player from './core/player/Player';
-import {IPlayerOption} from './core/interface/IPlayerOption';
+import { IPlayerOption } from './core/interface/IPlayerOption';
+import 'pixi.js';
+
 class Main {
   private player: Player;
+  private loader:PIXI.loaders.Loader;
   constructor() {
-    
+    this.initPlayer();
+    this.initBg();
   }
-  public initPlayer():void{
-    let list = document.querySelectorAll(".player");
-    let length = list.length;
-    for (let i = 0; i < length; i++) {
-      let container = <HTMLDivElement>list[i];
-      let player = new Player(container);
-    }
+  private initPlayer(): void {
+    let holder = document.getElementById('player-holder');
+    this.player = new Player(holder as HTMLDivElement);
+  }
+
+  private initBg():void{
+    let bg:PIXI.Sprite;
+    this.loader = new PIXI.loaders.Loader();
+    this.loader.add('background','../static/images/bg.jpg');
+    this.loader.addListener('progress',()=>{
+      console.log('loading...');
+    })
+    this.loader.addListener('complete',()=>{
+      bg = new PIXI.Sprite(this.loader.resources.background.texture);
+      this.player.stage.addChild(bg);
+      this.player.run();
+    })
+    this.loader.load();
   }
 }
-
-let main: Main = new Main();
-main.initPlayer();
+new Main();
 
 

@@ -17,7 +17,8 @@ var hotMiddleware = require('webpack-hot-middleware')(compiler);
 
 app.use(devMiddleware);
 app.use(hotMiddleware);
-var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
+console.log('staticPath',staticPath);
 app.use(staticPath, express.static('./static'));
 
 var uri = 'http://localhost:' + port;

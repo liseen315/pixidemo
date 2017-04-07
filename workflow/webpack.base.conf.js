@@ -14,21 +14,21 @@ module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
     path: path.resolve(projectRoot, 'dist')
   },
-  // plugins: [
-  //   new webpack.optimize.CommonsChunkPlugin({
-  //     names: ['vendor'],
-  //     minChunks: function (module) {
-  //       // 该配置假定你引入的 vendor 存在于 node_modules 目录中
-  //       return module.context && module.context.indexOf('node_modules') !== -1;
-  //     }
-  //   })
-  // ],
   module: {
     rules: [{
-      test: /\.tsx?$/,
-      loader: 'ts-loader',
-      exclude: /node_modules/,
-    }]
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.(ico|jpg|png|gif|svg|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        loader: 'file-loader',
+        query: {
+          limit: 10000,
+          name: 'static/[name].[hash:8].[ext]'
+        }
+      },
+    ]
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"]
