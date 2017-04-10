@@ -23,6 +23,8 @@ class Main {
     })
     this.loader.addListener('complete',()=>{
       bg = new PIXI.Sprite(this.loader.resources.background.texture);
+      bg.x = 0;
+      bg.y = 0;
       this.player.stage.addChild(bg);
       this.player.run();
     })

@@ -60,9 +60,9 @@ export default class Player implements IScreen {
     })
   }
 
-  private initResize():void{
-    window.addEventListener('resize',()=>{
-
+  private initResize(): void {
+    window.addEventListener('resize', () => {
+      this.updateScreenSize();
     })
   }
 
@@ -80,7 +80,7 @@ export default class Player implements IScreen {
     let screenWidth = shouldRotate ? screenRect.height : screenRect.width;
     let screenHeight = shouldRotate ? screenRect.width : screenRect.height;
     let stageSize: StageDisplaySize = ScreenAdapter.calculateStageSize(this.playerOption.scaleMode, screenWidth, screenHeight, this.playerOption.contentWidth, this.playerOption.contentHeight);
-    //console.log('updateScreenSize -> ',shouldRotate, screenRect.width, screenRect.height, stageSize.stageWidth, stageSize.stageHeight, stageSize.displayWidth, stageSize.displayHeight);
+    console.log('updateScreenSize -> ',shouldRotate, screenRect.width, screenRect.height, stageSize.stageWidth, stageSize.stageHeight, stageSize.displayWidth, stageSize.displayHeight);
     if (this.render.view.width !== stageSize.stageWidth) {
       this.render.view.width = stageSize.stageWidth;
     }
@@ -90,16 +90,28 @@ export default class Player implements IScreen {
 
     this.render.view.style.width = stageSize.displayWidth + 'px';
     this.render.view.style.height = stageSize.displayHeight + 'px';
+    let rotation = 0;
     if (shouldRotate) {
-
+      if (orientation == OrientationMode.LANDSCAPE) {
+        rotation = 90;
+        this.render.view.style.top = (screenRect.height - stageSize.displayWidth) / 2 + "px";
+        this.render.view.style.left = (screenRect.width + stageSize.displayHeight) / 2 + "px";
+      }
+      else {
+        rotation = -90;
+        this.render.view.style.top = (screenRect.height + stageSize.displayWidth) / 2 + "px";
+        this.render.view.style.left = (screenRect.width - stageSize.displayHeight) / 2 + "px";
+      }
     } else {
       this.render.view.style.top = (screenRect.height - stageSize.displayHeight) / 2 + 'px';
       this.render.view.style.left = (screenRect.width - stageSize.displayWidth) / 2 + 'px';
     }
+
+    
   }
 
-  public run():void{
-     this.render.render(this.stage);
+  public run(): void {
+    this.render.render(this.stage);
   }
 
   public setContentSize(): void {
