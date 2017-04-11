@@ -1,14 +1,15 @@
 import 'pixi.js'
-import { IScreen } from '../interface/IScreen';
 import { IPlayerOption } from '../interface/IPlayerOption';
 import ScaleMode from './ScaleMode';
 import OrientationMode from './OrientationMode';
 import { ScreenAdapter, StageDisplaySize } from './ScreenAdapter';
 
-export default class Player extends PIXI.Application implements IScreen {
+export default class Player extends PIXI.Application  {
   public static _instance: Player;
   private _playerOption: IPlayerOption;
   private _holder: HTMLDivElement;
+  private _shouldRotate:Boolean;
+
   public constructor(holder: HTMLDivElement) {
     super();
     this._holder = holder;
@@ -56,29 +57,20 @@ export default class Player extends PIXI.Application implements IScreen {
   }
 
   private addEventListeners(): void {
-    window.addEventListener("orientationchange", () => {
-      console.log('screen orientation change!');
-    })
     window.addEventListener('resize', () => {
       this.updateScreenSize();
     })
   }
 
-  public get playOption(): IPlayerOption {
-    return this._playerOption;
-  }
-
-
-  public updateScreenSize(): void {
+  private updateScreenSize(): void {
     let screenRect = this._holder.getBoundingClientRect();
-    let shouldRotate: Boolean;
     let orientation: string = this._playerOption.orientation
     if (orientation != OrientationMode.AUTO) {
-      shouldRotate = orientation != OrientationMode.PORTRAIT && screenRect.height > screenRect.width
+      this._shouldRotate = orientation != OrientationMode.PORTRAIT && screenRect.height > screenRect.width
         || orientation == OrientationMode.PORTRAIT && screenRect.width > screenRect.height;
     }
-    let screenWidth = shouldRotate ? screenRect.height : screenRect.width;
-    let screenHeight = shouldRotate ? screenRect.width : screenRect.height;
+    let screenWidth = this._shouldRotate ? screenRect.height : screenRect.width;
+    let screenHeight = this._shouldRotate ? screenRect.width : screenRect.height;
     let stageSize: StageDisplaySize = ScreenAdapter.calculateStageSize(this._playerOption.scaleMode, screenWidth, screenHeight, this._playerOption.contentWidth, this._playerOption.contentHeight);
     if (this.view.width !== stageSize.stageWidth) {
       this.view.width = stageSize.stageWidth;
@@ -90,7 +82,7 @@ export default class Player extends PIXI.Application implements IScreen {
     this.view.style.width = stageSize.displayWidth + 'px';
     this.view.style.height = stageSize.displayHeight + 'px';
     let rotation = 0;
-    if (shouldRotate) {
+    if (this._shouldRotate) {
       if (orientation == OrientationMode.LANDSCAPE) {
         rotation = 90;
         this.view.style.top = (screenRect.height - stageSize.displayWidth) / 2 + "px";
@@ -106,11 +98,10 @@ export default class Player extends PIXI.Application implements IScreen {
       this.view.style.left = (screenRect.width - stageSize.displayWidth) / 2 + 'px';
     }
 
-    console.log(this.stage.width,this.stage.height,this.screen.width,this.screen.height);
+    console.log(this._shouldRotate);
   }
 
-
-  public setContentSize(): void {
-
+  public get playOption(): IPlayerOption {
+    return this._playerOption;
   }
 }
