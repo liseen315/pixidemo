@@ -21,12 +21,6 @@ export class ScreenAdapter {
     switch (scaleMode) {
       case StageScaleMode.EXACT_FIT:
         break;
-      case StageScaleMode.FIXED_HEIGHT:
-        stageWidth = Math.round(screenWidth / scaleY);
-        break;
-      case StageScaleMode.FIXED_WIDTH:
-        stageHeight = Math.round(screenHeight / scaleX);
-        break;
       case StageScaleMode.NO_BORDER:
         if (scaleX > scaleY) {
           displayHeight = Math.round(stageHeight * scaleX);
@@ -41,14 +35,6 @@ export class ScreenAdapter {
         }
         else {
           displayHeight = Math.round(stageHeight * scaleX);
-        }
-        break;
-      case StageScaleMode.FIXED_NARROW:
-        if (scaleX > scaleY) {
-          stageWidth = Math.round(screenWidth / scaleY);
-        }
-        else {
-          stageHeight = Math.round(screenHeight / scaleX);
         }
         break;
       default:

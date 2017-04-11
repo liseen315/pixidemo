@@ -11,22 +11,23 @@ class Main {
   }
   private initPlayer(): void {
     let holder = document.getElementById('player-holder');
-    this.player = new Player(holder as HTMLDivElement);
+    this.player = Player.getInstance(holder as HTMLDivElement);
   }
 
   private initBg():void{
     let bg:PIXI.Sprite;
     this.loader = new PIXI.loaders.Loader();
-    this.loader.add('background','../static/images/bg.jpg');
+    this.loader.add('background','../static/images/bg1.jpg');
     this.loader.addListener('progress',()=>{
       console.log('loading...');
     })
     this.loader.addListener('complete',()=>{
+      console.log('load complete!');
       bg = new PIXI.Sprite(this.loader.resources.background.texture);
+      bg.anchor.set(0,0);
       bg.x = 0;
       bg.y = 0;
       this.player.stage.addChild(bg);
-      this.player.run();
     })
     this.loader.load();
   }
