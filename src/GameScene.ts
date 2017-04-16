@@ -1,6 +1,7 @@
 import BaseScene from './BaseScene';
 import Player from './core/player/Player';
 import MConfig from './MConfig';
+import {TweenLite,Expo} from 'gsap';
 
 export default class GameScene extends BaseScene {
   public static NAME:string = 'gameScene';
@@ -14,6 +15,8 @@ export default class GameScene extends BaseScene {
   private _leftWall:PIXI.Graphics;
   private _rightWall:PIXI.Graphics;
   private _ballColorList:Array<number>;
+  private _tapToStart:Boolean = true;
+  private _touchCount:number = -1;
 
   constructor(player:Player) {
     super(player);
@@ -38,31 +41,33 @@ export default class GameScene extends BaseScene {
     this._ballBox = new PIXI.Container();
     this._topBall = new PIXI.Graphics();
     this._topBall.beginFill(this._ballColorList[0]);
-    this._topBall.drawCircle(0,0,50);
+    this._topBall.drawCircle(0,0,30);
     this._topBall.endFill();
-    this._topBall.hitArea = new PIXI.Rectangle(0,0,100,100);
+    this._topBall.hitArea = new PIXI.Rectangle(0,0,60,60);
     this._ballBox.addChild(this._topBall);
 
     this._bottomBall = new PIXI.Graphics();
     this._bottomBall.beginFill(this._ballColorList[1]);
-    this._bottomBall.drawCircle(0,100,50);
-    this._bottomBall.hitArea = new PIXI.Rectangle(0,0,100,100);
+    this._bottomBall.drawCircle(0,60,30);
+    this._bottomBall.hitArea = new PIXI.Rectangle(0,0,60,60);
     this._bottomBall.endFill();
     this._ballBox.addChild(this._bottomBall);
 
     this._leftWall = new PIXI.Graphics();
     this._leftWall.beginFill(0x00ff00);
-    this._leftWall.drawRect(-70,0,20,100);
+    this._leftWall.drawRect(-40,0,20,60);
     this._leftWall.endFill();
     this._leftWall.hitArea = new PIXI.Rectangle(0,0,20,100);
     this._ballBox.addChild(this._leftWall);
 
     this._rightWall = new PIXI.Graphics();
     this._rightWall.beginFill(0x00ff00);
-    this._rightWall.drawRect(50,0,20,100);
+    this._rightWall.drawRect(20,0,20,60);
     this._rightWall.endFill();
     this._rightWall.hitArea = new PIXI.Rectangle(0,0,20,100);
     this._ballBox.addChild(this._rightWall);
+
+    this._ballBox.pivot = new PIXI.Point(0,30);
   }
 
   private createBallColor():Array<number>{
@@ -89,25 +94,55 @@ export default class GameScene extends BaseScene {
     this._bgGraphics.endFill();
     this.addChild(this._bgGraphics);
 
-    this._touchPlayTF =  new PIXI.Text('Tab to start',{fontFamily: 'Arial', fontSize:35, fill: 0x000000, align: 'center'});
+    this._touchPlayTF =  new PIXI.Text('Tap to start',{fontFamily: 'Arial', fontSize:80, fill: 0x000000, align: 'center'});
     this.addChild(this._touchPlayTF);
     this._touchPlayTF.x = (this.renderer.width -  this._touchPlayTF.width)/2;
-    this._touchPlayTF.y = 50;
+    this._touchPlayTF.y = 220;
 
     //添加小球到渲染
     this.addChild(this._ballBox);
     this._ballBox.x =  (this.renderer.width)/2;
-    this._ballBox.y = (this.renderer.height - this._ballBox.height)/2;
+    this._ballBox.y = (this.renderer.height - this._ballBox.height)/2 + 60;
 
     this._touchLayer = new PIXI.Sprite();
     this._touchLayer.width = this.renderer.width;
     this._touchLayer.height = this.renderer.height;
     this.addChild(this._touchLayer);
     this._touchLayer.interactive = true;
-    this._touchLayer.addListener('tap',()=>{
-      console.log('旋转！');
-    })
+    this._touchLayer.addListener('tap',this.rotationBallBox,this);
     this.stage.addChild(this);
+  }
+
+  private rotationBallBox():void{
+    if(this._tapToStart){
+      this._touchPlayTF.visible = false;
+      this._tapToStart = false;
+      TweenLite.delayedCall(1,()=>{
+        this.ceateBall();
+      })
+      return;
+    }
+    this._touchLayer.removeListener('tap',this.rotationBallBox,this);
+    this._touchCount++;
+    TweenLite.to(this._ballBox,0.5,{rotation:this.angleToRadian(180*(this._touchCount+1)),ease:Expo.easeOut,onComplete:()=>{
+      this.reAddTapListener();
+    }})
+  }
+  //角度转弧度
+  private angleToRadian(angle:number):number{
+    return angle*(Math.PI/180);
+  }
+  //弧度转角度
+  private radianToAng(radian:number):number{
+    return radian*(180/Math.PI);
+  }
+
+  private ceateBall():void{
+    
+  }
+
+  private reAddTapListener():void{
+    this._touchLayer.addListener('tap',this.rotationBallBox,this);
   }
 
   public quit():void{
