@@ -2,6 +2,7 @@ import BaseScene from './BaseScene';
 import Player from './core/player/Player';
 import MConfig from './MConfig';
 import {TweenLite,Expo} from 'gsap';
+import TargetBall from './TargetBall';
 
 export default class GameScene extends BaseScene {
   public static NAME:string = 'gameScene';
@@ -17,7 +18,11 @@ export default class GameScene extends BaseScene {
   private _ballColorList:Array<number>;
   private _tapToStart:Boolean = true;
   private _touchCount:number = -1;
-
+  private _sourceTF:PIXI.Text;
+  //产生的小球的出现方向
+  private _direction:number = 1;
+  private _targetBall:TargetBall;
+  private _targetBallSpeed:number = 6;
   constructor(player:Player) {
     super(player);
     this.name = GameScene.NAME;
@@ -88,6 +93,7 @@ export default class GameScene extends BaseScene {
   }
 
   public render():void{
+    super.render();
     this._bgGraphics = new PIXI.Graphics();
     this._bgGraphics.beginFill(0xFFFFFF);
     this._bgGraphics.drawRect(0,0,this.renderer.width,this.renderer.height);
@@ -98,6 +104,12 @@ export default class GameScene extends BaseScene {
     this.addChild(this._touchPlayTF);
     this._touchPlayTF.x = (this.renderer.width -  this._touchPlayTF.width)/2;
     this._touchPlayTF.y = 220;
+
+    //平分
+    this._sourceTF = new PIXI.Text('0',{fontFamily: 'Arial', fontSize:60, fill: 0x000000, align: 'center'});
+    this.addChild(this._sourceTF);
+    this._sourceTF.y = 220;
+    this._sourceTF.x = -(this._sourceTF.width);
 
     //添加小球到渲染
     this.addChild(this._ballBox);
@@ -117,6 +129,10 @@ export default class GameScene extends BaseScene {
     if(this._tapToStart){
       this._touchPlayTF.visible = false;
       this._tapToStart = false;
+      TweenLite.to(this._sourceTF,0.5,{
+        x:(this.renderer.width-this._sourceTF.width)/2,
+        ease: Expo.easeOut
+      })
       TweenLite.delayedCall(1,()=>{
         this.ceateBall();
       })
@@ -138,14 +154,40 @@ export default class GameScene extends BaseScene {
   }
 
   private ceateBall():void{
-    
+    let targetBallColor = this._ballColorList[parseInt(this.rang(0,2).toString(),10)];
+    if(Math.random() > 0.5){
+      this._direction = 1;
+    }else {
+      this._direction = -1;
+    }
+
+    this._targetBall = new TargetBall(targetBallColor);
+    if(this._direction == 1){
+      this._targetBall.y = -30;
+    }else {
+      this._targetBall.y = this.renderer.height+30;
+    }
+    this._targetBall.x = (this.renderer.width - this._targetBall.width)/2 + 30;
+    this.addChild(this._targetBall);
+
+    //this.ticker.add(this.update,this);
   }
 
   private reAddTapListener():void{
     this._touchLayer.addListener('tap',this.rotationBallBox,this);
   }
 
-  public quit():void{
-
+  public update():void{
+    if(!this._targetBall){
+      return;
+    }
+    this._targetBall.y += (this._targetBallSpeed*this._direction);
+    
   }
+
+  public quit():void{
+    this.stage.removeChild(this);
+  }
+
+
 }

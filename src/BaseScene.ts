@@ -4,11 +4,13 @@ export default class BaseScene extends PIXI.Container {
   public name:string = '';
   private _stage:PIXI.Container;
   private _renderer:PIXI.SystemRenderer;
+  private _tick:PIXI.ticker.Ticker;
 
   public constructor(player:Player){
     super();
     this._stage = player.stage;
     this._renderer = player.renderer;
+    this._tick = player.ticker;
   }
 
   public get stage():PIXI.Container {
@@ -19,10 +21,15 @@ export default class BaseScene extends PIXI.Container {
     return this._renderer;
   }
 
-  public render():void{}
+  public get ticker():PIXI.ticker.Ticker{
+    return this._tick;
+  }
 
-  public quit():void{}
+  public render():void{
+    this._tick.add(this.update,this);
+  }
+
+  public quit():void{}  
 
   public update():void{}
-  
 }
