@@ -8,7 +8,7 @@ export default class Player extends PIXI.Application  {
   public static _instance: Player;
   private _playerOption: IPlayerOption;
   private _holder: HTMLDivElement;
-  private _shouldRotate:Boolean;
+  private _shouldRotate:Boolean = false;
 
   public constructor(holder: HTMLDivElement) {
     super();
@@ -97,8 +97,6 @@ export default class Player extends PIXI.Application  {
       this.view.style.top = (screenRect.height - stageSize.displayHeight) / 2 + 'px';
       this.view.style.left = (screenRect.width - stageSize.displayWidth) / 2 + 'px';
     }
-
-    console.log(this._shouldRotate);
   }
 
   public get playOption(): IPlayerOption {

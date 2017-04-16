@@ -21,7 +21,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(ico|jpg|png|gif|svg|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(ico|jpg|png|gif|svg|eot|otf|webp|mp3|ogg|ttf|woff|woff2)(\?.*)?$/,
         loader: 'file-loader',
         query: {
           limit: 10000,
