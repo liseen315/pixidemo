@@ -5,12 +5,14 @@ import SceneManager from './SceneManager';
 import LoadingScene from './LoadingScene';
 import GameScene from './GameScene';
 import EventConst from './EventConst';
+import OverScene from './OverScene';
 
 class Main {
   private player: Player;
   private _sceneManager:SceneManager;
   private _loadingScene:LoadingScene;
   private _gameScene:GameScene;
+  private _overScene:OverScene;
   private loader:PIXI.loaders.Loader;
   
   constructor() {
@@ -26,8 +28,11 @@ class Main {
     this._sceneManager = new SceneManager();
     this._loadingScene = new LoadingScene(this.player);
     this._gameScene = new GameScene(this.player);
+    this._overScene = new OverScene(this.player);
+
     this._sceneManager.addScene(this._loadingScene);
     this._sceneManager.addScene(this._gameScene);
+    this._sceneManager.addScene(this._overScene);
 
     this._sceneManager.runScene(LoadingScene.NAME);
     this._loadingScene.once(EventConst.START_GAME,() => {
@@ -35,9 +40,13 @@ class Main {
       this._sceneManager.runScene(GameScene.NAME);
     })
 
+    this._overScene.on(EventConst.START_GAME,()=>{
+      console.log('重新开始！');
+      this._sceneManager.runScene(GameScene.NAME);
+    })
+
     this._gameScene.on(EventConst.GAME_OVER,()=>{
-      console.log('gameOver change to overScene');
-      
+      this._sceneManager.runScene(OverScene.NAME);
     })
 
   }

@@ -28,15 +28,11 @@ export default class GameScene extends BaseScene {
   //产生的小球的出现方向
   private _direction: number = 1;
   private _targetBall: TargetBall;
-  private _targetBallSpeed: number = 6;
+  private _targetBallSpeed: number = 10;
 
   constructor(player: Player) {
     super(player);
     this.name = GameScene.NAME;
-    this.selectMusic();
-    this._ballColorList = this.createBallColor();
-    //生成小球
-    this.createBallBox();
   }
 
   private selectMusic(): void {
@@ -75,7 +71,7 @@ export default class GameScene extends BaseScene {
 
   private createBallColor(): Array<number> {
     let index = 0;
-    let colorConfigList = MConfig.ballColor;
+    let colorConfigList = MConfig.ballColor.concat();
     let tempList: Array<number> = [];
     while (index < 2) {
       let targetIndex = parseInt(this.rang(0, colorConfigList.length).toString(), 10);
@@ -92,6 +88,11 @@ export default class GameScene extends BaseScene {
 
   public render(): void {
     super.render();
+    this.selectMusic();
+    this._ballColorList = this.createBallColor();
+    //生成小球
+    this.createBallBox();
+
     this._bgGraphics = new PIXI.Graphics();
     this._bgGraphics.beginFill(0xFFFFFF);
     this._bgGraphics.drawRect(0, 0, this.renderer.width, this.renderer.height);
@@ -181,7 +182,6 @@ export default class GameScene extends BaseScene {
     if (this._targetBall == null) {
       return;
     }
-
     this._targetBall.y += (this._targetBallSpeed * this._direction);
 
     if (HitTester.complexHitTestObject(this._targetBall, this._topBall)) {
@@ -232,7 +232,7 @@ export default class GameScene extends BaseScene {
   private showShadow(shdowColor: number): void {
     let shadowBall: ShadowBall = new ShadowBall(shdowColor);
     this.addChild(shadowBall);
-    this.setChildIndex(shadowBall, 1);
+    //this.setChildIndex(shadowBall, 1);
     shadowBall.x = (this.renderer.width - shadowBall.width) / 2 + 30;
     shadowBall.y = (this.renderer.height - shadowBall.height) / 2 + 30;
 
@@ -250,7 +250,7 @@ export default class GameScene extends BaseScene {
 
   private gameOver(): void {
     this.emit(EventConst.GAME_OVER);
-    this.ticker.stop();
+    this.ticker.remove(this.update,this);
   }
 
   private destroyTargetBall(): void {
@@ -259,7 +259,12 @@ export default class GameScene extends BaseScene {
 
   public quit(): void {
     this.stage.removeChild(this);
+    this._tapToStart = true;
+    this._targetBall = null;
+    this._touchCount = -1;
+    this._musicNodeCount = -1;
+    this._sourceCount = 0;
+    this._direction = 1;
+    this._targetBallSpeed = 10;
   }
-
-
 }

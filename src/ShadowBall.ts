@@ -7,6 +7,7 @@ export default class ShadowBall extends TargetBall {
     this._ticker = new PIXI.ticker.Ticker();
     this._ticker.add(this.scaleBall,this);
     this._ticker.start();
+    
   }
 
   protected initBall(): void {

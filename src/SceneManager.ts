@@ -17,7 +17,6 @@ export default class SceneManager {
   public runScene(sName:string):BaseScene{
     if(this._currentRunScene != null){
       this._currentRunScene.quit();
-      this._currentRunScene = null;
     }
     let index = 0;
     for(index;index< this._sceneList.length;index++){
