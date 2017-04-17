@@ -17,6 +17,8 @@ spinner.start();
 var assetsPath = config.build.assetsRoot;
 rm('-rf', assetsPath);
 mkdir('-p', assetsPath);
+var staticPath = path.resolve(__dirname, '../static');
+cp('-Rf',staticPath,assetsPath);
 
 webpack(webpackConfig, function (err, stats) {
   spinner.stop();
