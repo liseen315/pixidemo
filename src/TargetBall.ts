@@ -1,13 +1,17 @@
 export default class TargetBall extends PIXI.Graphics {
+  private _color:number;
   public constructor(color:number){
     super()
+    this._color = color;
     this.initBall(color);
   }
 
-  private initBall(color:number):void{
+  public get color():number{
+    return this._color;
+  }
+  protected initBall(color:number):void{
     this.beginFill(color);
     this.drawCircle(0,0,30);
     this.endFill();
-    this.hitArea = new PIXI.Rectangle(0,0,60,60);
   }
 }

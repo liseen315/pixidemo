@@ -1,9 +1,10 @@
+import 'pixi.js';
 import Player from './core/player/Player';
 import { IPlayerOption } from './core/interface/IPlayerOption';
 import SceneManager from './SceneManager';
 import LoadingScene from './LoadingScene';
 import GameScene from './GameScene';
-import 'pixi.js';
+import EventConst from './EventConst';
 
 class Main {
   private player: Player;
@@ -29,9 +30,14 @@ class Main {
     this._sceneManager.addScene(this._gameScene);
 
     this._sceneManager.runScene(LoadingScene.NAME);
-    this._loadingScene.once('startGame',() => {
+    this._loadingScene.once(EventConst.START_GAME,() => {
       this._loadingScene.removeAllListeners();
       this._sceneManager.runScene(GameScene.NAME);
+    })
+
+    this._gameScene.on(EventConst.GAME_OVER,()=>{
+      console.log('gameOver change to overScene');
+      
     })
 
   }

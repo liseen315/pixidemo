@@ -1,5 +1,6 @@
 import BaseScene from './BaseScene';
 import Player from './core/player/Player';
+import EventConst from './EventConst';
 export default class LoadingScene extends BaseScene {
   public static NAME:string = 'loadingScene';
 
@@ -41,7 +42,7 @@ export default class LoadingScene extends BaseScene {
 
       this._playBtn.interactive = true;
       this._playBtn.addListener('tap',() => {
-        this.emit('startGame');
+        this.emit(EventConst.START_GAME);
       })
     })
     this._loader.load();
