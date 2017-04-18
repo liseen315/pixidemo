@@ -12,4 +12,6 @@ export default class ScaleMode {
   public static SHOW_ALL: string = "showAll";
   public static NO_BORDER: string = "noBorder";
   public static EXACT_FIT: string = "exactFit";
+  public static FIXED_HEIGHT: string = 'fixedHeight';
+  public static FIXED_WIDTH: string = 'fixedWidth';
 } 

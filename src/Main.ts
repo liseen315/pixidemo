@@ -41,11 +41,11 @@ class Main {
     })
 
     this._overScene.on(EventConst.START_GAME,()=>{
-      console.log('重新开始！');
       this._sceneManager.runScene(GameScene.NAME);
     })
 
     this._gameScene.on(EventConst.GAME_OVER,()=>{
+      console.log('Game Over!');
       this._sceneManager.runScene(OverScene.NAME);
     })
 
