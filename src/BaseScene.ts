@@ -26,7 +26,6 @@ export default class BaseScene extends PIXI.Container {
   }
 
   public render():void{
-    this._tick.add(this.update,this);
   }
 
   public quit():void{}  

@@ -45,7 +45,6 @@ class Main {
     })
 
     this._gameScene.on(EventConst.GAME_OVER,()=>{
-      console.log('Game Over!');
       this._sceneManager.runScene(OverScene.NAME);
     })
 

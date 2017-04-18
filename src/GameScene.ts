@@ -29,10 +29,11 @@ export default class GameScene extends BaseScene {
   private _direction: number = 1;
   private _targetBall: TargetBall;
   private _targetBallSpeed: number = 10;
-
+  private _shadowBall: ShadowBall;
   constructor(player: Player) {
     super(player);
     this.name = GameScene.NAME;
+    this.ticker.add(this.update,this);
   }
 
   private selectMusic(): void {
@@ -87,7 +88,7 @@ export default class GameScene extends BaseScene {
   }
 
   public render(): void {
-    super.render();
+   
     this.selectMusic();
     this._ballColorList = this.createBallColor();
     //生成小球
@@ -182,10 +183,14 @@ export default class GameScene extends BaseScene {
     if (this._targetBall == null) {
       return;
     }
+
+    if (this._shadowBall) {
+      this._shadowBall.update();
+    }
+    console.log('update->>>>',this._targetBallSpeed);
     this._targetBall.y += (this._targetBallSpeed * this._direction);
 
     if (HitTester.complexHitTestObject(this._targetBall, this._topBall)) {
-      //console.log('top hit');
       this.destroyTargetBall();
       //判断是否为同一个颜色否则gameOver
       if (this._targetBall.color == this._topBall.color) {
@@ -201,7 +206,6 @@ export default class GameScene extends BaseScene {
     }
 
     if (HitTester.complexHitTestObject(this._targetBall, this._bottomBall)) {
-      //console.log('bottom hit');
       this.destroyTargetBall();
       if (this._targetBall.color == this._bottomBall.color) {
         this.showShadow(this._targetBall.color);
@@ -216,13 +220,11 @@ export default class GameScene extends BaseScene {
     }
 
     if (HitTester.complexHitTestObject(this._targetBall, this._leftWall)) {
-      //console.log('hit leftWall');
       this.destroyTargetBall();
       this.gameOver();
     }
 
     if (HitTester.complexHitTestObject(this._targetBall, this._rightWall)) {
-      //console.log('hit leftWall');
       this.destroyTargetBall();
       this.gameOver();
     }
@@ -230,17 +232,12 @@ export default class GameScene extends BaseScene {
   }
 
   private showShadow(shdowColor: number): void {
-    let shadowBall: ShadowBall = new ShadowBall(shdowColor);
-    this.addChild(shadowBall);
-    //this.setChildIndex(shadowBall, 1);
-    shadowBall.x = (this.renderer.width - shadowBall.width) / 2 + 30;
-    shadowBall.y = (this.renderer.height - shadowBall.height) / 2 + 30;
+    this._shadowBall = new ShadowBall(shdowColor);
+    this.addChild(this._shadowBall);
+    this._shadowBall.x = (this.renderer.width - this._shadowBall.width) / 2 + 30;
+    this._shadowBall.y = (this.renderer.height - this._shadowBall.height) / 2 + 30;
 
     this._musicNodeCount++;
-
-    // this.touchSound = new GameSound(Assets.pianoSound[this.selectedMusic[this.noteCount]]);
-    // this.touchSound.effectSoundAyarla(1, false);
-
   }
 
   private addScore(): void {
@@ -249,8 +246,8 @@ export default class GameScene extends BaseScene {
   }
 
   private gameOver(): void {
+    
     this.emit(EventConst.GAME_OVER);
-    this.ticker.remove(this.update,this);
   }
 
   private destroyTargetBall(): void {
